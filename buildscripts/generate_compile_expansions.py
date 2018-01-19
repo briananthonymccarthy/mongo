@@ -78,11 +78,17 @@ def generate_scons_cache_expansions():
         default_cache_path_base = r"z:\data\scons-cache"
     else:
         system_id_path = "/etc/mongodb-build-system-id"
-        default_cache_path_base = "/data/scons-cache"
+        # default_cache_path_base = "/data/scons-cache"
+        default_cache_path_base = "/efs"
 
     if os.path.isfile(system_id_path):
         with open(system_id_path, "r") as f:
-            default_cache_path = os.path.join(default_cache_path_base, f.readline().strip())
+            # default_cache_path = os.path.join(default_cache_path_base, f.readline().strip())
+            project = os.getenv("PROJECT")
+            user = os.getenv("USER")
+            ami = os.getenv("AMI")
+            distro_id = os.getenv("DISTRO_ID")
+            default_cache_path = os.path.join(default_cache_path_base, project, "users", user, distro_id, ami, "cache" )
 
             expansions["scons_cache_path"] = default_cache_path
 

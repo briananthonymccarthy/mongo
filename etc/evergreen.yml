@@ -84,9 +84,17 @@ variables:
         MONGO_VERSION="$MONGO_VERSION-patch-${version_id}"
       fi
 
+      # For shared scons cache we need the ami ID and OS user
+      if [ "${use_scons_cache}" = "true" ]; then
+        ami=`curl -s http://169.254.169.254/latest/meta-data/ami-id`
+        user=`whoami`
+        mkdir -p "/efs/${project}/users/${user}/${distro_id}/${ami}/cache"
+      fi
+
       # This script converts the generated version string into a sanitized version string for
       # use by scons and uploading artifacts as well as information about for the scons cache.
-      MONGO_VERSION=$MONGO_VERSION SCONS_CACHE_MODE=${scons_cache_mode|nolinked} USE_SCONS_CACHE=${use_scons_cache|false} ${python|/opt/mongodbtoolchain/v2/bin/python2} buildscripts/generate_compile_expansions.py --out compile_expansions.yml
+      #MONGO_VERSION=$MONGO_VERSION SCONS_CACHE_MODE=${scons_cache_mode|nolinked} USE_SCONS_CACHE=${use_scons_cache|false} ${python|/opt/mongodbtoolchain/v2/bin/python2} buildscripts/generate_compile_expansions.py --out compile_expansions.yml
+      MONGO_VERSION=$MONGO_VERSION SCONS_CACHE_MODE=${scons_cache_mode|nolinked} USE_SCONS_CACHE=${use_scons_cache|false} DISTRO_ID=${distro_id} PROJECT=${project} AMI=${ami} USER=${user} ${python|/opt/mongodbtoolchain/v2/bin/python2} buildscripts/generate_compile_expansions.py --out compile_expansions.yml
 
 - &apply_compile_expansions
   command: expansions.update
