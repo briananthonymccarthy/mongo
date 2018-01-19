@@ -2188,10 +2188,10 @@ tasks:
           ${python|/opt/mongodbtoolchain/v2/bin/python2} ../buildscripts/make_archive.py -o mongodb-shell.${ext|tgz} $(find mongodb-* -type f)
           cd ..
 
-    - func: "fetch test_lifecycle.yml"
-      vars:
+    #- func: "fetch test_lifecycle.yml"
+    #  vars:
         # Do not fail the task if we fail to fetch the test_lifecycle.yml file
-        fail_task_on_error: false
+    #    fail_task_on_error: false
 
     - command: archive.targz_pack
       params:
